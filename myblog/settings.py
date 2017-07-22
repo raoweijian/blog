@@ -31,7 +31,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'im.apps.ImConfig',
     "blog.apps.BlogConfig",
     'django.contrib.admin',
     'django.contrib.auth',
@@ -117,3 +116,4 @@ STATIC_URL = '/static/'
 #STATICFILES_DIRS = (  
 #    STATIC_PATH,  
 #)
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
