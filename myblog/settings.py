@@ -32,6 +32,8 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     "blog.apps.BlogConfig",
+    #"django.contrib.markup",
+    "markup_deprecated",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -112,8 +114,36 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATIC_URL = '/static/'
-#STATIC_PATH = os.path.join(BASE_DIR,'static')  
-#STATICFILES_DIRS = (  
-#    STATIC_PATH,  
-#)
 STATIC_ROOT = os.path.join(BASE_DIR, "static/")
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': '/home/raoweijian/projects/blog_dev/log/debug.log',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'myblog.blog': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        }
+    },
+    'formatters': {
+        'verbose': {
+            'format': '[%(levelname)s] %(asctime)25s %(filename)15s:%(lineno)d %(funcName)10s:  %(message)s',
+        },
+        'simple': {
+            'format': '%(levelname)8s %(message)s',
+        },
+    },
+}
