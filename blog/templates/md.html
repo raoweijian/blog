@@ -1,12 +1,38 @@
 {% extends "base.html" %}
+{% load custom_markdown %}
 
 {% block content %}
 
 <div class='container'>
-    <div class="panel panel-default">
-        <div class="panel-body">
-            {{ content|safe }}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="panel panel-default">
+                <div class="panel-body">
+
+                    {{ content | safe }}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <h1>评论</h1>
+            <!-- 加载评论列表 -->
+            {% for group_id, group in comments.items %}
+            <div class='panel'>
+                {% for comment in group %}
+                <div id="comment_{{comment.id}}">
+                    <p><span style="color:blue;">{{ comment.user_name }}</span>
+                    {% if comment.ref_user != None %}
+                    <span>回复 </span><span style="color:blue;">{{ comment.ref_user }}</span>
+                    {% endif %}
+                    <span> : {{ comment.content }}</span>
+                    <button onclick="expand_comment_input(this)" clicked="no">回复</button>
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endfor %}
         </div>
     </div>
 </div>
+
 {% endblock %}
