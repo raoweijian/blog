@@ -2,3 +2,6 @@
 venv
 *.swp
 nohup.out
+log
+uwsgi
+db.sqlite3
