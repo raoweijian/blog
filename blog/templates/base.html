@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+    {% block head %}
     <head>
         <meta charset="utf-8">
         <title>raoweijian</title>
@@ -7,11 +8,11 @@
         <link rel="stylesheet" type="text/css" href="/static/admin/css/default.css">
         <link rel="stylesheet" type="text/css" href="/static/admin/css/md.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
         <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
         <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <script src="/static/admin/js/comment.js"></script>
+        <link href="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     </head>
+    {% endblock %}
     <body>
         {% include 'nav.html' %}
 

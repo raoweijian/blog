@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% load custom_markdown %}
 
+{% block head %}
+{{ block.super }}
+<script src="/static/admin/js/comment.js"></script>
+{% endblock %}
+
 {% block content %}
 
 <div class='container'>

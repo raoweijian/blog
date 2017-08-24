@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ block.super }}
+<!-- <script src='/static/admin/js/marked.js'></script> -->
+<!-- <script src='/static/admin/js/markdown.js'></script> -->
+<link rel="stylesheet" href="/static/admin/css/github-markdown.css">
+<script src='/static/admin/js/showdown.js'></script>
+<script src='/static/admin/js/editor.js'></script>
+
+{% endblock %}
+
+{% block content %}
+<div id='container'>
+    <!-- 标题和提交按钮 -->
+    <ul>
+        <div class="col-lg-4">
+            <input type="text" class="form-control" placeholder="文章标题"></input>
+        </div>
+        <div class="col-lg-4">
+            <a class="btn btn-danger btn-lg btn-blog-publish" data-original-title="" title="">发表博客</a>
+        </div>
+    </ul>
+    <!--编辑区-->
+    <div id='editor-column'>
+        <textarea id="mdeditor"></textarea>
+    </div>
+
+    <!-- 预览区 -->
+    <div id='preview-column'>
+        <div id="preview"></div>
+    </div>
+</div>
+{% endblock %}

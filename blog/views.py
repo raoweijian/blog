@@ -30,6 +30,11 @@ def index(request):
     return render(request, 'index.html', {'article_list': ls})
 
 
+def edit(request):
+    """编辑器"""
+    return render(request, 'edit.html')
+
+
 def content(request, file_name):
     """全文页面"""
     #解析markdown内容
