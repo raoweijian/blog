@@ -5,18 +5,20 @@ import os
 import logging
 import urllib
 import json
-import urllib
 import markdown
+import base64
+import re
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.conf import settings
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 from .apps import BlogConfig
-
 from .models import Comment
+
+from blog.libs import common
 
 logger = logging.getLogger('myblog.blog')
 
@@ -30,7 +32,7 @@ def index(request):
     return render(request, 'index.html', {'article_list': ls})
 
 
-def edit(request):
+def new(request):
     """编辑器"""
     return render(request, 'edit.html')
 
@@ -53,7 +55,7 @@ def content(request, file_name):
     #整理评论关系
     groups = {}
     for comment in comments:
-        logger.info(comment.id)
+        #logger.info(comment.id)
         group_id = comment.group
         if group_id not in groups:
             groups[group_id] = []
@@ -74,6 +76,18 @@ def content(request, file_name):
         new_groups.append(groups[group_id])
 
     return render(request, 'md.html', {'content': html, 'comment_groups': new_groups})
+
+
+@csrf_exempt
+def publish(request):
+    """发表文章"""
+    content = request.POST['content']
+    title = request.POST['title']
+    ret = common.store_article(content, title)
+    new_url = '/blog/content/' + os.path.basename(ret).replace('.md', '')
+    #return HttpResponseRedirect(new_url)
+    return HttpResponse(new_url)
+    #return redirect(new_url)
 
 
 @csrf_exempt
@@ -108,3 +122,13 @@ def submit_comment(request):
     )
     new_comment.save()
     return HttpResponse("comment_" + str(new_comment.id))
+
+
+@csrf_exempt
+def upload_picture(request):
+    """上传图片"""
+    data = urllib.parse.unquote(request.POST['abc'])
+    source_code = data.split('base64,')[1]
+    src = common.store_pic(source_code)
+
+    return HttpResponse(src)

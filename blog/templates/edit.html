@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="/static/admin/css/github-markdown.css">
 <script src='/static/admin/js/showdown.js'></script>
 <script src='/static/admin/js/editor.js'></script>
-
+<script src='/static/admin/js/paste.js'></script>
 {% endblock %}
 
 {% block content %}
@@ -15,10 +15,10 @@
     <!-- 标题和提交按钮 -->
     <ul>
         <div class="col-lg-4">
-            <input type="text" class="form-control" placeholder="文章标题"></input>
+            <input type="text" class="form-control" placeholder="文章标题" id="title"></input>
         </div>
         <div class="col-lg-4">
-            <a class="btn btn-danger btn-lg btn-blog-publish" data-original-title="" title="">发表博客</a>
+            <a class="btn btn-danger btn-lg btn-blog-publish" data-original-title="" title="" id="button_publish">发表博客</a>
         </div>
     </ul>
     <!--编辑区-->
