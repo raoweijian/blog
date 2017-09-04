@@ -15,15 +15,19 @@
     <!-- 标题和提交按钮 -->
     <ul>
         <div class="col-lg-4">
+            {% if title %}
+            <input type="text" class="form-control" value="{{ title }}" id="title"></input>
+            {% else %}
             <input type="text" class="form-control" placeholder="文章标题" id="title"></input>
+            {% endif %}
         </div>
         <div class="col-lg-4">
-            <a class="btn btn-danger btn-lg btn-blog-publish" data-original-title="" title="" id="button_publish">发表博客</a>
+            <a class="btn btn-danger btn-lg" id="button_publish">发表博客</a>
         </div>
     </ul>
     <!--编辑区-->
     <div id='editor-column'>
-        <textarea id="mdeditor"></textarea>
+        <textarea id="mdeditor">{{ content }}</textarea>
     </div>
 
     <!-- 预览区 -->

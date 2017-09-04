@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ block.super }}
+<link rel="stylesheet" href="/static/admin/css/login.css">
+{% endblock %}
+
+{% block content %}
+<div class="wrapper">
+    <form action="" method="post" >
+        {% csrf_token %}
+        <div class="loginBox">
+            <div class="loginBoxCenter">
+                <p><label for="username">用户名</label></p>
+                <p><input id="username" name="username" class="loginInput" autofocus="autofocus" required="required" autocomplete="off" value="" /></p>
+                <p><input type="password" id="password" name="password" class="loginInput" required="required" placeholder="请输入密码" value="" /></p>
+            </div>
+            <div class="loginBoxButtons">
+                <input type="submit" class="loginBtn" value="登陆"/>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

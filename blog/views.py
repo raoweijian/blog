@@ -9,14 +9,17 @@ import markdown
 import base64
 import re
 
-from django.shortcuts import render, redirect
 from django.conf import settings
-from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib import auth
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
+from django.shortcuts import render, redirect, render_to_response
+from django.template.context import RequestContext
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 from .apps import BlogConfig
 from .models import Comment
+from .forms import LoginForm  
 
 from blog.libs import common
 
@@ -27,8 +30,8 @@ logger = logging.getLogger('myblog.blog')
 def index(request):
     """文章列表"""
     content_dir = '/'.join([settings.BASE_DIR, BlogConfig.name, BlogConfig.content_dir])
-    ls = os.popen('ls %s' % content_dir).readlines()
-    ls = map(lambda x: x.strip().replace('.md', ''), [y for y in ls])
+    ls = os.popen('ls %s/*.md' % content_dir).readlines()
+    ls = map(lambda x: os.path.basename(x.strip()).replace('.md', ''), [y for y in ls])
     return render(request, 'index.html', {'article_list': ls})
 
 
@@ -75,7 +78,29 @@ def content(request, file_name):
     for group_id in sorted(groups.keys()):
         new_groups.append(groups[group_id])
 
-    return render(request, 'md.html', {'content': html, 'comment_groups': new_groups})
+    return render(request, 'md.html', {'content': line, 'comment_groups': new_groups})
+
+
+def edit(request, file_name):
+    """编辑已有的文章"""
+    file_path = '/'.join([settings.BASE_DIR, BlogConfig.name, BlogConfig.content_dir, file_name])
+    file_path += '.md'
+    if not os.path.exists(file_path):
+        return HttpResponseNotFound('<h1>Page not found</h1>')
+
+    with open(file_path, 'r') as fp:
+        content = fp.read()
+
+    return render(request, 'edit.html', {'title': file_name, 'content': content})
+
+
+def delete(request, file_name):
+    """删除文章"""
+    file_path = '/'.join([settings.BASE_DIR, BlogConfig.name, BlogConfig.content_dir, file_name])
+    file_path += '.md'
+    if os.path.exists(file_path):
+        os.rename(file_path, file_path + '_bak')
+    return HttpResponseRedirect('/blog')
 
 
 @csrf_exempt
@@ -85,9 +110,7 @@ def publish(request):
     title = request.POST['title']
     ret = common.store_article(content, title)
     new_url = '/blog/content/' + os.path.basename(ret).replace('.md', '')
-    #return HttpResponseRedirect(new_url)
     return HttpResponse(new_url)
-    #return redirect(new_url)
 
 
 @csrf_exempt
@@ -132,3 +155,24 @@ def upload_picture(request):
     src = common.store_pic(source_code)
 
     return HttpResponse(src)
+
+
+def login(request):
+    if request.user.is_authenticated(): 
+        return HttpResponseRedirect('/blog')
+
+    username = request.POST.get('username', '')
+    password = request.POST.get('password', '')
+    
+    user = auth.authenticate(username = username, password = password)
+
+    if user is not None and user.is_active:
+        auth.login(request, user)
+        return HttpResponseRedirect('/blog')
+    else:
+        return render(request, 'login.html') 
+
+
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect('/blog')

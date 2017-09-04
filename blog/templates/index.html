@@ -3,14 +3,22 @@
 {% block content %}
 
 <div class='container'>
+    {% if request.user.username == "raoweijian" %}
     <div class="col-lg-12">
         <div style="float: right;">
             <a class="btn btn-info btn-lg" id="write_new" style="margin: 10px" href="{% url 'index' %}new">写新文章</a>
         </div>
     </div>
+    {% endif %}
     <table class="table">
         {% for item in article_list %}
-        <tr><td><a href="{% url 'index' %}content/{{ item }}">{{ item }}</a></td></tr>
+        <tr>
+            <td><a href="{% url 'index' %}content/{{ item }}">{{ item }}</a></td>
+            {% if request.user.username == "raoweijian" %}
+            <td><a class="a_button" href="{% url 'index' %}content/{{ item }}/edit">编辑</a></td>
+            <td><a class="a_button" href="{% url 'index' %}content/{{ item }}/delete">删除</a></td>
+            {% endif %}
+        </tr>
         {% endfor %}
     </table>
 </div>

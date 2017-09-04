@@ -5,3 +5,5 @@ nohup.out
 log
 uwsgi
 db.sqlite3
+node_modules
+static/admin/js/ace/

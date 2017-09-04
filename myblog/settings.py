@@ -32,7 +32,6 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     "blog.apps.BlogConfig",
-    #"django.contrib.markup",
     "markup_deprecated",
     'django.contrib.admin',
     'django.contrib.auth',
@@ -40,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'bootstrap_toolkit',
+    'django_forms_bootstrap',
+    'bootstrap_toolkit',
 ]
 
 MIDDLEWARE = [

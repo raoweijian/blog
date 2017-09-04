@@ -1,7 +1,12 @@
 $(function(){
     showdown.setOption('simpleLineBreaks', true);
     var converter = new showdown.Converter();
+    
+    //页面加载完，马上进行一次转换
+    var to_html = converter.makeHtml($('#mdeditor').val());
+    $('#preview').html(to_html);
 
+    // mdeditor 变化时，进行转换
     $('#mdeditor').bind('input', function() {
         var to_html = converter.makeHtml($(this).val());
         $('#preview').html(to_html);

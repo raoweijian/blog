@@ -4,16 +4,15 @@
 {% block head %}
 {{ block.super }}
 <script src="/static/admin/js/comment.js"></script>
+<script src='/static/admin/js/showdown.js'></script>
 {% endblock %}
 
 {% block content %}
-
 <div class='container'>
     <div class="row">
         <div class="col-lg-8">
             <div class="panel panel-default">
-                <div class="panel-body">
-
+                <div class="panel-body" id="content">
                     {{ content | safe }}
                 </div>
             </div>
@@ -71,4 +70,17 @@
     </div>
 </div>
 
+<script type="text/javascript">
+$(function(){
+    showdown.setOption('simpleLineBreaks', true);
+    var converter = new showdown.Converter();
+
+    var origin = $('#content').html();
+
+    //去除行首多余的空格
+    origin = $.trim(origin);
+    var to_html = converter.makeHtml(origin);
+    $('#content').html(to_html);
+});
+</script>
 {% endblock %}
