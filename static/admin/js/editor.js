@@ -1,7 +1,7 @@
 $(function(){
     showdown.setOption('simpleLineBreaks', true);
     var converter = new showdown.Converter();
-    
+
     //页面加载完，马上进行一次转换
     var to_html = converter.makeHtml($('#mdeditor').val());
     $('#preview').html(to_html);
@@ -26,7 +26,7 @@ $(function(){
                 console.log(ret);
                 var new_html = $('#mdeditor').val() + "![图片](" + ret + ")\n";
                 console.log("new_html is " + new_html);
-                
+
                 $('#mdeditor').val(new_html);
                 console.log("new mdeditor is " + $('#mdeditor').val());
 
