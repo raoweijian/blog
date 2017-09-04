@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     "blog.apps.BlogConfig",
-    "markup_deprecated",
+    #"markup_deprecated",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

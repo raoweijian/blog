@@ -19,7 +19,6 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 from .apps import BlogConfig
 from .models import Comment
-from .forms import LoginForm  
 
 from blog.libs import common
 
@@ -30,7 +29,7 @@ logger = logging.getLogger('myblog.blog')
 def index(request):
     """文章列表"""
     content_dir = '/'.join([settings.BASE_DIR, BlogConfig.name, BlogConfig.content_dir])
-    ls = os.popen('ls %s/*.md' % content_dir).readlines()
+    ls = os.popen('ls -t %s/*.md' % content_dir).readlines()
     ls = map(lambda x: os.path.basename(x.strip()).replace('.md', ''), [y for y in ls])
     return render(request, 'index.html', {'article_list': ls})
 
