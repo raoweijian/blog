@@ -153,23 +153,29 @@ def upload_picture(request):
     source_code = data.split('base64,')[1]
     src = common.store_pic(source_code)
 
-    return HttpResponse(src)
+    #获取图片缩放后的大小
+    full_path = os.path.join(settings.BASE_DIR, src.lstrip('/'))
+    logger.info("base_dir is [%s]" % settings.BASE_DIR)
+    logger.info("pic path: %s" % full_path)
+    size = common.zoom_pic(full_path)
+
+    return HttpResponse(src + " =%dx%d" % (size[0], size[1]))
 
 
 def login(request):
-    if request.user.is_authenticated(): 
+    if request.user.is_authenticated():
         return HttpResponseRedirect('/blog')
 
     username = request.POST.get('username', '')
     password = request.POST.get('password', '')
-    
+
     user = auth.authenticate(username = username, password = password)
 
     if user is not None and user.is_active:
         auth.login(request, user)
         return HttpResponseRedirect('/blog')
     else:
-        return render(request, 'login.html') 
+        return render(request, 'login.html')
 
 
 def logout(request):
