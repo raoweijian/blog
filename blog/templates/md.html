@@ -20,7 +20,7 @@
                 </div>
                 {% endif %}
                 <div class="panel-body" id="content">
-                    {{ content | safe }}
+                    {{ content }}
                 </div>
             </div>
         </div>
@@ -86,6 +86,7 @@ $(function(){
 
     //去除行首多余的空格
     origin = $.trim(origin);
+    console.log(origin);
     var to_html = converter.makeHtml(origin);
     $('#content').html(to_html);
 });
