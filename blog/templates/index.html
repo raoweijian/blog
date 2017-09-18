@@ -11,9 +11,10 @@
     </div>
     {% endif %}
     <table class="table">
-        {% for item in article_list %}
+        {% for pair in article_list %}
         <tr>
-            <td><a href="{% url 'index' %}content/{{ item }}">{{ item }}</a></td>
+            <td><a href="{% url 'index' %}content/{{ pair.0 }}">{{ pair.0 }}</a></td>
+            <td class="time_stamp">{{ pair.1 }}</td>
             {% if request.user.username == "raoweijian" %}
             <td><a class="a_button" href="{% url 'index' %}content/{{ item }}/edit">编辑</a></td>
             <td><a class="a_button" href="{% url 'index' %}content/{{ item }}/delete">删除</a></td>

@@ -24,14 +24,21 @@ from blog.libs import common
 
 logger = logging.getLogger('myblog.blog')
 
-# Create your views here.
-
 def index(request):
     """文章列表"""
     content_dir = '/'.join([settings.BASE_DIR, BlogConfig.name, BlogConfig.content_dir])
-    ls = os.popen('ls -t %s/*.md' % content_dir).readlines()
-    ls = map(lambda x: os.path.basename(x.strip()).replace('.md', ''), [y for y in ls])
-    return render(request, 'index.html', {'article_list': ls})
+    #ls = os.popen('ls -t %s/*.md' % content_dir).readlines()
+    #ls = os.popen("ls -l --time-style '+\\%Y-\\%m-\\%d \\%H:\\%M' %s/*.md" % content_dir).readlines()
+    ls = os.popen("ls -t -l --time-style '+%Y-%m-%d %H:%M' " + content_dir + "/*.md").readlines()
+
+    article_list = []
+    for line in ls:
+        t = re.split('\s+', line.strip(), 7)
+        update_time = " ".join((t[5], t[6]))
+        title = os.path.basename(t[7]).replace('.md', '')
+        article_list.append([title, update_time])
+
+    return render(request, 'index.html', {'article_list': article_list})
 
 
 def new(request):
