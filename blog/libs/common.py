@@ -8,10 +8,13 @@
 #
 # Description: 
 
-from django.conf import settings
 import random
 import os
 import base64
+
+from django.conf import settings
+
+from PIL import Image
 
 def store_pic(data):
     """存储图片"""
@@ -24,6 +27,18 @@ def store_pic(data):
         fp.write(imgdata)
 
     return os.path.join("/static/images/blog", file_name)
+
+
+def zoom_pic(filename, max_width = 550):
+    """缩放图片，方便展示"""
+    img = Image.open(filename)
+    width = img.size[0]
+    if width <= max_width:
+        return img.size
+    else:
+        ratio = max_width / width
+        height = int(ratio * img.size[1])
+        return (max_width, height)
 
 
 def rand_name(length = 8):

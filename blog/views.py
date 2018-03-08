@@ -24,14 +24,21 @@ from blog.libs import common
 
 logger = logging.getLogger('myblog.blog')
 
-# Create your views here.
-
 def index(request):
     """文章列表"""
     content_dir = '/'.join([settings.BASE_DIR, BlogConfig.name, BlogConfig.content_dir])
-    ls = os.popen('ls -t %s/*.md' % content_dir).readlines()
-    ls = map(lambda x: os.path.basename(x.strip()).replace('.md', ''), [y for y in ls])
-    return render(request, 'index.html', {'article_list': ls})
+    #ls = os.popen('ls -t %s/*.md' % content_dir).readlines()
+    #ls = os.popen("ls -l --time-style '+\\%Y-\\%m-\\%d \\%H:\\%M' %s/*.md" % content_dir).readlines()
+    ls = os.popen("ls -t -l --time-style '+%Y-%m-%d %H:%M' " + content_dir + "/*.md").readlines()
+
+    article_list = []
+    for line in ls:
+        t = re.split('\s+', line.strip(), 7)
+        update_time = " ".join((t[5], t[6]))
+        title = os.path.basename(t[7]).replace('.md', '')
+        article_list.append([title, update_time])
+
+    return render(request, 'index.html', {'article_list': article_list})
 
 
 def new(request):
@@ -123,6 +130,7 @@ def submit_comment(request):
     article_name = urllib.parse.unquote(article_name).rstrip('#') + ".md"
 
     #找到引用的那一条数据
+    group_id = None
     comment_id = None
     if 'comment_id' in request.POST:
         ref_comment_id = request.POST['comment_id']
@@ -131,8 +139,12 @@ def submit_comment(request):
         refered = Comment.objects.get(id = comment_id)
         group_id = refered.group
     else:
-        comment = Comment.objects.order_by('-group')[0]
-        group_id = comment.group + 1
+        comments = Comment.objects.order_by('-group')
+        if len(comments) == 0:
+            group_id = 1
+        else:
+            comment = Comment.objects.order_by('-group')[0]
+            group_id = comment.group + 1
 
     #创建新数据
     new_comment = Comment(
@@ -153,23 +165,29 @@ def upload_picture(request):
     source_code = data.split('base64,')[1]
     src = common.store_pic(source_code)
 
-    return HttpResponse(src)
+    #获取图片缩放后的大小
+    full_path = os.path.join(settings.BASE_DIR, src.lstrip('/'))
+    logger.info("base_dir is [%s]" % settings.BASE_DIR)
+    logger.info("pic path: %s" % full_path)
+    size = common.zoom_pic(full_path)
+
+    return HttpResponse(src + " =%dx%d" % (size[0], size[1]))
 
 
 def login(request):
-    if request.user.is_authenticated(): 
+    if request.user.is_authenticated():
         return HttpResponseRedirect('/blog')
 
     username = request.POST.get('username', '')
     password = request.POST.get('password', '')
-    
+
     user = auth.authenticate(username = username, password = password)
 
     if user is not None and user.is_active:
         auth.login(request, user)
         return HttpResponseRedirect('/blog')
     else:
-        return render(request, 'login.html') 
+        return render(request, 'login.html')
 
 
 def logout(request):

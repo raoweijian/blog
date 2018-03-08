@@ -5,12 +5,15 @@
 <script src="/static/admin/js/comment.js"></script>
 <script src='/static/admin/js/showdown.js'></script>
 <link rel="stylesheet" href="/static/admin/css/github-markdown.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script >hljs.initHighlightingOnLoad();</script>
 {% endblock %}
 
 {% block content %}
 <div class='container'>
     <div class="row">
-        <div class="col-lg-8">
+        <div class="col-lg-12">
             <div class="panel panel-default">
                 {% if request.user.username == "raoweijian" %}
                 <div class="col-lg-12">
@@ -22,56 +25,6 @@
                 <div class="panel-body" id="content">
                     {{ content }}
                 </div>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <h1>评论</h1>
-            <!-- 加载评论列表 -->
-            {% for group in comment_groups %}
-            <div class='panel'>
-                {% for comment in group %}
-                <div id="comment_{{comment.id}}">
-                    <p><span class='user_name'>{{ comment.user_name }}</span>
-                    {% if comment.ref_user != None %}
-                    <span>回复 </span><span class='user_name'>{{ comment.ref_user }}</span>
-                    {% endif %}
-                    <span> : {{ comment.content }}</span>
-                    </p>
-                    <p align="right">
-                    <a href='javascript:;' class='comment_button'>回复</a>
-                    </p>
-
-                    <!-- 输入框和对应的提交按钮，默认隐藏 -->
-                    <div style="display: none">
-                        <div class="input-group">
-                            <span class="input-group-addon">用户名</span>
-                            <input type="text" class="form-control">
-                        </div>
-
-                        <div class="input-group">
-                            <span class="input-group-addon">内容</span>
-                            <input type="text" class="form-control">
-                        </div>
-                        <button class="btn btn-default submit-comment" type="button">提交</button>
-                    </div>
-                </div>
-                {% endfor %}
-
-            </div>
-            {% endfor %}
-
-            <!-- 添加新评论的地方 -->
-            <div style="display: table">
-                <div class="input-group">
-                    <span class="input-group-addon">用户名</span>
-                    <input type="text" class="form-control">
-                </div>
-
-                <div class="input-group">
-                    <span class="input-group-addon">内容</span>
-                    <input type="text" class="form-control">
-                </div>
-                <button class="btn btn-default submit-comment" type="button">提交</button>
             </div>
         </div>
     </div>
@@ -88,7 +41,13 @@ $(function(){
     origin = $.trim(origin);
     console.log(origin);
     var to_html = converter.makeHtml(origin);
+    to_html = escape2Html(to_html);
     $('#content').html(to_html);
+
+    function escape2Html(str) {
+        var arrEntities={'lt':'<','gt':'>','nbsp':' ','amp':'&','quot':'"'};
+        return str.replace(/&(lt|gt|nbsp|amp|quot);/ig, function(all,t){return arrEntities[t];});
+    }
 });
 </script>
 {% endblock %}
