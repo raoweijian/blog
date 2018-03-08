@@ -1,6 +1,5 @@
 最近在做一个小工具，用于在html里展示两个字符串不一致的地方。
-用到了一些js的代码，包括开源库和自己写的代码。由于开源库代码量很多，直接写在html里会导致文件很大，不方便转发、查看。
-只能用
+用到了一些js的代码，包括开源库和自己写的代码。由于开源库代码量很多，直接写在html里会导致文件很大，不方便转发、查看。只能用
 
     <script src=''></srcirpt> 
 
@@ -8,7 +7,7 @@
 
 由于产出html的代码用的是python，使用pyh，最终产出的html如下：
 
-![图片](http://img.blog.csdn.net/20161229123303364?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcmFvd2Vpamlhbg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center)
+![图片](http://img.blog.csdn.net/20161229123303364?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvcmFvd2Vpamlhbg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center =650x70)
 
 
 注意一下js的位置，是放在head里的。

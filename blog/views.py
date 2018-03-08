@@ -130,6 +130,7 @@ def submit_comment(request):
     article_name = urllib.parse.unquote(article_name).rstrip('#') + ".md"
 
     #找到引用的那一条数据
+    group_id = None
     comment_id = None
     if 'comment_id' in request.POST:
         ref_comment_id = request.POST['comment_id']
@@ -138,8 +139,12 @@ def submit_comment(request):
         refered = Comment.objects.get(id = comment_id)
         group_id = refered.group
     else:
-        comment = Comment.objects.order_by('-group')[0]
-        group_id = comment.group + 1
+        comments = Comment.objects.order_by('-group')
+        if len(comments) == 0:
+            group_id = 1
+        else:
+            comment = Comment.objects.order_by('-group')[0]
+            group_id = comment.group + 1
 
     #创建新数据
     new_comment = Comment(
