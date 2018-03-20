@@ -1,19 +1,19 @@
 ## 效果展示
 #### 首页：
-![图片](http://ovh9b5ele.bkt.clouddn.com/XuQjS6DLxaSMrPCVVdL0.png =550x113)
+![图片](http://ovh9b5ele.bkt.clouddn.com/XuQjS6DLxaSMrPCVVdL0.png)
 
-<br>
+
 #### 详情页：
-![图片](http://ovh9b5ele.bkt.clouddn.com/0SWWuyOwsCoilOtf5Yqf.png =550x441)
+![图片](http://ovh9b5ele.bkt.clouddn.com/0SWWuyOwsCoilOtf5Yqf.png)
 
-<br>
+
 #### 编辑页面：
-![图片](http://ovh9b5ele.bkt.clouddn.com/tZNE8ilcRh3pt5bfVC6c.png =550x210)
+![图片](http://ovh9b5ele.bkt.clouddn.com/tZNE8ilcRh3pt5bfVC6c.png)
 
 
 #### 贴图：
 支持截图后直接 ctrl v 粘贴到文档里。
-![图片](http://ovh9b5ele.bkt.clouddn.com/GIF.gif =825x315)
+![图片](http://ovh9b5ele.bkt.clouddn.com/GIF.gif)
 这里用到了七牛云的服务，需要自己注册账号，配置账号密码之类的
 
 
