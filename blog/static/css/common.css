@@ -1,0 +1,11 @@
+.a_button {
+    float: right;
+    font-size: 9px;
+}
+
+.time_stamp{
+    line-height: 30px !important;
+    text-align: right !important;
+    white-space: nowrap;
+    color: #AAAAAA;
+}
