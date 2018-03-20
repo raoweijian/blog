@@ -11,6 +11,8 @@
 #### 编辑页面：
 ![图片](http://ovh9b5ele.bkt.clouddn.com/tZNE8ilcRh3pt5bfVC6c.png)
 
+#### 同步滚动:
+![图片](http://ovh9b5ele.bkt.clouddn.com/scroll.gif)
 
 #### 贴图：
 支持截图后直接 ctrl v 粘贴到文档里。
