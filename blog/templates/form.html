@@ -9,9 +9,9 @@
 {% block content %}
 
     <h1>This is a <em>{{ layout }}</em> Django form, bootstrapped</h1>
-    
+
     <p>&nbsp;</p>
-        
+
     <form class="form-{{ layout }}" action="" method="post">
         {% csrf_token %}
         {{ form|as_bootstrap:layout }}

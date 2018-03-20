@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
+#coding=utf8
 from __future__ import unicode_literals
 
-import os
 import logging
 import urllib
-import json
-import markdown
-import base64
+import zipfile
 import re
 
 from django.conf import settings
@@ -15,27 +12,23 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render, redirect, render_to_response
 from django.template.context import RequestContext
 from django.urls import reverse
+from django.core.management import call_command
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.http import StreamingHttpResponse
 
 from .apps import BlogConfig
-from .models import Comment
 
 from blog.libs import common
+from .models import Article
 
 logger = logging.getLogger('myblog.blog')
 
 def index(request):
     """文章列表"""
-    content_dir = '/'.join([settings.BASE_DIR, BlogConfig.name, BlogConfig.content_dir])
-    #ls = os.popen('ls -t %s/*.md' % content_dir).readlines()
-    #ls = os.popen("ls -l --time-style '+\\%Y-\\%m-\\%d \\%H:\\%M' %s/*.md" % content_dir).readlines()
-    ls = os.popen("ls -t -l --time-style '+%Y-%m-%d %H:%M' " + content_dir + "/*.md").readlines()
-
     article_list = []
-    for line in ls:
-        t = re.split('\s+', line.strip(), 7)
-        update_time = " ".join((t[5], t[6]))
-        title = os.path.basename(t[7]).replace('.md', '')
+    for article in Article.objects.order_by("-last_modify_time"):
+        title = article.title
+        update_time = article.last_modify_time.strftime("%Y-%m-%d %H:%M")
         article_list.append([title, update_time])
 
     return render(request, 'index.html', {'article_list': article_list})
@@ -43,70 +36,41 @@ def index(request):
 
 def new(request):
     """编辑器"""
-    return render(request, 'edit.html')
+    return render(request, 'edit.html', {"title": "", "content": ""})
 
 
-def content(request, file_name):
+def content(request, title):
     """全文页面"""
-    #解析markdown内容
-    file_path = '/'.join([settings.BASE_DIR, BlogConfig.name, BlogConfig.content_dir, file_name])
-    file_path += '.md'
-    with open(file_path, 'r') as fp:
-        line = fp.read()
-    html = markdown.markdown(line, ['codehilite'])
+    if settings.DATABASES['default']['PORT'] == '4050':
+        title = urllib.unquote(str(title))
+    else:
+        title = urllib.unquote(title)
+    article = Article.objects.get(title = title)
 
-    #获取评论
-    try:
-        comments = Comment.objects.filter(article_name = "%s.md" % file_name).order_by('ctime')
-    except Comment.DoesNotExist:
-        comments = []
-
-    #整理评论关系
-    groups = {}
-    for comment in comments:
-        #logger.info(comment.id)
-        group_id = comment.group
-        if group_id not in groups:
-            groups[group_id] = []
-
-        append = {}
-        append['user_name'] = comment.user_name
-        append['content'] = comment.content
-        append['id'] = comment.id
-        if comment.ref is None:
-            append['ref_user'] = None
-        else:
-            ref = Comment.objects.get(id = comment.ref)
-            append['ref_user'] = ref.user_name
-        groups[group_id].append(append)
-    new_groups = []
-
-    for group_id in sorted(groups.keys()):
-        new_groups.append(groups[group_id])
-
-    return render(request, 'md.html', {'content': line, 'comment_groups': new_groups})
+    return render(request, 'md.html', {'content': article.content})
 
 
-def edit(request, file_name):
+def edit(request, title):
     """编辑已有的文章"""
-    file_path = '/'.join([settings.BASE_DIR, BlogConfig.name, BlogConfig.content_dir, file_name])
-    file_path += '.md'
-    if not os.path.exists(file_path):
-        return HttpResponseNotFound('<h1>Page not found</h1>')
+    if settings.DATABASES['default']['PORT'] == '4050':
+        title = urllib.unquote(str(title))
+    else:
+        title = urllib.unquote(title)
+    article = Article.objects.get(title = title)
 
-    with open(file_path, 'r') as fp:
-        content = fp.read()
-
-    return render(request, 'edit.html', {'title': file_name, 'content': content})
+    return render(request, 'edit.html', {'title': title, 'content': article.content})
 
 
-def delete(request, file_name):
+def delete(request, title):
     """删除文章"""
-    file_path = '/'.join([settings.BASE_DIR, BlogConfig.name, BlogConfig.content_dir, file_name])
-    file_path += '.md'
-    if os.path.exists(file_path):
-        os.rename(file_path, file_path + '_bak')
-    return HttpResponseRedirect('/blog')
+    if settings.DATABASES['default']['PORT'] == '4050':
+        title = urllib.unquote(str(title))
+    else:
+        title = urllib.unquote(title)
+
+    article = Article.objects.get(title = title)
+    article.delete()
+    return HttpResponseRedirect('/')
 
 
 @csrf_exempt
@@ -114,16 +78,22 @@ def publish(request):
     """发表文章"""
     content = request.POST['content']
     title = request.POST['title']
-    ret = common.store_article(content, title)
-    new_url = '/blog/content/' + os.path.basename(ret).replace('.md', '')
+    article = Article.objects.filter(title = title).first()
+
+    #如果标题改了，没有了，就重新插入一个
+    if article is None:
+        logger.info("重新插入: %s" % title)
+        article = Article(title =  title, content = content)
+    else:
+        article.content = content
+    article.save()
+
+    new_url = '/content/' + title
     return HttpResponse(new_url)
 
 
 @csrf_exempt
 def submit_comment(request):
-    """
-    用户提交评论
-    """
     #获取评论内容、用户名以及引用的id
     request_url = request.POST['current_url']
     article_name = request_url.split('/')[-1]
@@ -161,22 +131,16 @@ def submit_comment(request):
 @csrf_exempt
 def upload_picture(request):
     """上传图片"""
-    data = urllib.parse.unquote(request.POST['abc'])
+    data = urllib.unquote(request.POST['abc'])
     source_code = data.split('base64,')[1]
-    src = common.store_pic(source_code)
+    src = common.get_pic_src(source_code)
 
-    #获取图片缩放后的大小
-    full_path = os.path.join(settings.BASE_DIR, src.lstrip('/'))
-    logger.info("base_dir is [%s]" % settings.BASE_DIR)
-    logger.info("pic path: %s" % full_path)
-    size = common.zoom_pic(full_path)
-
-    return HttpResponse(src + " =%dx%d" % (size[0], size[1]))
+    return HttpResponse(src)
 
 
 def login(request):
     if request.user.is_authenticated():
-        return HttpResponseRedirect('/blog')
+        return HttpResponseRedirect('/')
 
     username = request.POST.get('username', '')
     password = request.POST.get('password', '')
@@ -185,11 +149,57 @@ def login(request):
 
     if user is not None and user.is_active:
         auth.login(request, user)
-        return HttpResponseRedirect('/blog')
+        return HttpResponseRedirect('/')
     else:
         return render(request, 'login.html')
 
 
 def logout(request):
     auth.logout(request)
-    return HttpResponseRedirect('/blog')
+    return HttpResponseRedirect('/')
+
+
+def migrate(request):
+    call_command("migrate")
+    return HttpResponse("migrate done")
+
+
+"""
+从 zip 文件导入
+"""
+def _import(request):
+    if not request.user.is_authenticated():
+        logger.error("未登录用户不允许上传!")
+        return HttpResponseRedirect('/')
+
+    if request.method == "POST":
+        file_name = common.save_upload_file(request.FILES['file'])
+        azip = zipfile.ZipFile(file_name)
+        for title in azip.namelist():
+            content = azip.read(title)
+            title = re.sub('\.md$', '', title)
+            article = Article.objects.filter(title = title).first()
+            if article is None:
+                article = Article(title = title, content = content)
+            else:
+                article.content = content
+            article.save()
+    return HttpResponseRedirect('/')
+
+
+"""
+导出所有内容
+"""
+def export(request):
+    zip_file_name = "export.zip"
+    azip = zipfile.ZipFile(zip_file_name, 'w')
+    for article in Article.objects.all():
+        file_name = "%s.md" % article.title
+        azip.writestr(file_name, article.content.encode("utf8"), compress_type = zipfile.ZIP_DEFLATED)
+    azip.close()
+    file_obj = open(zip_file_name, 'rb')
+    response = StreamingHttpResponse(file_obj)
+
+    response['Content-Type'] = 'application/octet-stream'
+    response['Content-Disposition'] = 'attachment;filename="export.zip"'
+    return response

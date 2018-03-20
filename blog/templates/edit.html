@@ -2,12 +2,13 @@
 
 {% block head %}
 {{ block.super }}
-<!-- <script src='/static/admin/js/marked.js'></script> -->
-<!-- <script src='/static/admin/js/markdown.js'></script> -->
-<link rel="stylesheet" href="/static/admin/css/github-markdown.css">
-<script src='/static/admin/js/showdown.js'></script>
-<script src='/static/admin/js/editor.js'></script>
-<script src='/static/admin/js/paste.js'></script>
+<link rel="stylesheet" href="/static/css/github-markdown.css">
+<link rel="stylesheet" href="/static/css/edit.css">
+<script src='/static/js/showdown-1.8.6.min.js'></script>
+<script src='/static/js/editor.js'></script>
+<script src='/static/js/paste.js'></script>
+
+{% include 'highlight.html' %}
 {% endblock %}
 
 {% block content %}
@@ -22,7 +23,7 @@
             {% endif %}
         </div>
         <div class="col-lg-4">
-            <a class="btn btn-danger btn-lg" id="button_publish">发表博客</a>
+            <a class="btn btn-danger btn-lg" id="button_publish">发表</a>
         </div>
     </ul>
     <!--编辑区-->

@@ -1,9 +1,6 @@
-*__pycache__
-venv
+*.pyc
 *.swp
-nohup.out
-log
-uwsgi
-db.sqlite3
-node_modules
-static/admin/js/ace/
+venv
+debug.log
+debug.db
+sqlite3.db

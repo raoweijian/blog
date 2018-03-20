@@ -6,27 +6,59 @@
 #
 # Filename: common.py
 #
-# Description: 
+# Description:
 
 import random
 import os
+import logging
 import base64
 
 from django.conf import settings
+from qiniu import Auth, put_file, etag
 
 from PIL import Image
 
-def store_pic(data):
+logger = logging.getLogger('myblog.blog')
+
+def get_pic_src(data):
     """存储图片"""
-    #生成文件名
+    #先写入本地临时文件
     file_name = rand_name() + ".png"
-    full_path = os.path.join(settings.BASE_DIR, "static/images/blog/", file_name)
+    logger.debug("file_name: %s" % file_name)
 
     imgdata = base64.b64decode(data)
-    with open(full_path, 'wb') as fp:
+    with open(file_name, 'wb') as fp:
         fp.write(imgdata)
 
-    return os.path.join("/static/images/blog", file_name)
+    #上传到七牛云
+    size = zoom_pic(file_name)
+    src = upload_to_qiniu(file_name)
+
+    #删除临时文件
+    os.remove(file_name)
+
+    return src + " =%dx%d" % (size[0], size[1])
+
+
+"""上传图片到七牛云"""
+def upload_to_qiniu(file_name):
+    access_key = ''
+    secret_key = ''
+    bucket_name = ''
+    site = ""
+
+    q = Auth(access_key, secret_key)
+
+    key = file_name
+    token = q.upload_token(bucket_name, key, 3600)
+
+    ret, info = put_file(token, key, file_name)
+
+    if ret["key"] == key:
+        return site + key
+    else:
+        logger.error("上传图片失败: %s" % info)
+        raise
 
 
 def zoom_pic(filename, max_width = 550):
@@ -36,12 +68,13 @@ def zoom_pic(filename, max_width = 550):
     if width <= max_width:
         return img.size
     else:
-        ratio = max_width / width
+        ratio = float(max_width) / width
         height = int(ratio * img.size[1])
         return (max_width, height)
 
 
-def rand_name(length = 8):
+def rand_name(length = 20):
+    """随机生成一个字符串"""
     inds = list(range(48, 58)) + list(range(65, 91)) + list(range(97, 123))
     ret = ""
     for i in range(length):
@@ -49,9 +82,11 @@ def rand_name(length = 8):
         ret += chr(num)
     return ret
 
-def store_article(content, title):
-    """存储文章"""
-    full_path = os.path.join(settings.BASE_DIR, "blog/content", "%s.md" % title)
-    with open(full_path, 'w') as fp:
-        fp.write(content)
-    return full_path
+
+def save_upload_file(file):
+    file_name = "import.zip"
+    logger.info("upload file name: %s" % str(file))
+    with open(file_name, 'wb') as fp:
+        for chunk in file.chunks():
+            fp.write(chunk)
+    return file_name
