@@ -59,4 +59,11 @@ $(function(){
             );
         },
     })
+
+    $("textarea#mdeditor").on('scroll', function(){
+        $preview = $("div#preview");
+        var percentage = this.scrollTop / (this.scrollHeight - this.offsetHeight);
+        var height = percentage * ($preview.get(0).scrollHeight - $preview.get(0).offsetHeight);
+        $preview.scrollTop(height);
+    });
 });

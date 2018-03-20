@@ -18,7 +18,6 @@
 
 #preview-column {
     float: right;
-    overflow-y: scroll;
 }
 
 html {
@@ -35,6 +34,7 @@ body, #container, #preview{
 
 #preview {
     background: rgb(246, 246, 246);
+    overflow-y: scroll;
 }
 
 p {
