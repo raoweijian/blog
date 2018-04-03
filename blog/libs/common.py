@@ -12,6 +12,7 @@ import random
 import os
 import logging
 import base64
+import urllib
 
 from django.conf import settings
 from qiniu import Auth, put_file, etag
@@ -42,10 +43,10 @@ def get_pic_src(data):
 
 """上传图片到七牛云"""
 def upload_to_qiniu(file_name):
-    access_key = ''
-    secret_key = ''
-    bucket_name = ''
-    site = ""
+    access_key = 'zf76R_XB46jVYMbAA8Lb3HhLid-R9nYALrsuJrsS'
+    secret_key = 'Q-BxLrFl2uy53bpGwMx2VunTrb7d_tdhvhIzlqZV'
+    bucket_name = 'rwj-pic-store'
+    site = "http://ovh9b5ele.bkt.clouddn.com/"
 
     q = Auth(access_key, secret_key)
 
@@ -61,7 +62,7 @@ def upload_to_qiniu(file_name):
         raise
 
 
-def zoom_pic(filename, max_width = 550):
+def zoom_pic(filename, max_width = 1100):
     """缩放图片，方便展示"""
     img = Image.open(filename)
     width = img.size[0]
@@ -90,3 +91,10 @@ def save_upload_file(file):
         for chunk in file.chunks():
             fp.write(chunk)
     return file_name
+
+
+"""把url编码的字符串还原"""
+def unquote(title):
+    # 这里判断端口 4050，是因为我把它部署在了 BAE 上，BAE 提供的数据库端口都是 4050。
+    # 另外一个比较蛋疼的问题是，bae 上 title 传进来的时候是 unicode，而我本地部署时，title 是 str，所以处理方式有些不同
+    return urllib.unquote(str(title)) if settings.DATABASES['default']['PORT'] == '4050' else urllib.unquote(title)

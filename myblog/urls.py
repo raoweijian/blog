@@ -19,9 +19,11 @@ from django.contrib.auth import urls as auth_urls
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 from django.conf import settings
+from blog.urls import router as blog_router
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
+    url(r'^api/', include(blog_router.urls)),
     url(r'^', include("blog.urls")),
 ]
 

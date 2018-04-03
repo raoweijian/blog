@@ -10,7 +10,12 @@
 {% endblock %}
 
 {% block content %}
-<div class='container'>
+<div class='container' id="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 style="text-align: center;">{{ title }}</h1>
+        </div>
+    </div>
     <div class="row">
         <div class="col-lg-12">
             <div class="panel panel-default">
@@ -21,8 +26,7 @@
                     </div>
                 </div>
                 {% endif %}
-                <div class="panel-body" id="content">
-                    {{ content }}
+                <div class="panel-body" id="content" v-html="content">
                 </div>
             </div>
         </div>
@@ -30,23 +34,39 @@
 </div>
 
 <script type="text/javascript">
-$(function(){
-    showdown.setOption('simpleLineBreaks', true);
-    var converter = new showdown.Converter();
+'use strict';
 
-    var origin = $('#content').html();
+showdown.setOption('simpleLineBreaks', true);
 
-    //去除行首多余的空格
-    origin = $.trim(origin);
-    var to_html = converter.makeHtml(origin);
-    to_html = escape2Html(to_html);
-    $('#content').html(to_html);
+let app = new Vue({
+    el: '#container',
+    data: {
+        content: '',
+        converter: new showdown.Converter(),
+    },
 
-    function escape2Html(str) {
-        var arrEntities = {'lt':'<', 'gt':'>', 'nbsp':' ', 'amp':'&', 'quot':'"'};
-        return str.replace(/&(lt|gt|nbsp|amp|quot);/ig, function(all,t){return arrEntities[t];});
-    }
+    mounted: function(){
+        let title = location.href.split('/').pop();
+        let data = {};
+        axios.get('/api/article/?title=' + title)
+            .then((response) => {
+                this.content = this.converter.makeHtml(response.data[0].content);
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    },
 
+    updated: function(){
+        $('pre code').each(function(i, block){
+            hljs.highlightBlock(block);
+        });
+    },
 });
+
+function escape2Html(str){
+    var arrEntities = {'lt':'<', 'gt':'>', 'nbsp':' ', 'amp':'&', 'quot':'"'};
+    return str.replace(/&(lt|gt|nbsp|amp|quot);/ig, function(all,t){return arrEntities[t];});
+}
 </script>
 {% endblock %}

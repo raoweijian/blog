@@ -1,6 +1,4 @@
 #coding=utf8
-from __future__ import unicode_literals
-
 import logging
 import urllib
 import zipfile
@@ -34,28 +32,22 @@ def index(request):
     return render(request, 'index.html', {'article_list': article_list})
 
 
-def new(request):
-    """编辑器"""
-    return render(request, 'edit.html', {"title": "", "content": ""})
-
-
 def content(request, title):
     """全文页面"""
-    if settings.DATABASES['default']['PORT'] == '4050':
-        title = urllib.unquote(str(title))
-    else:
-        title = urllib.unquote(title)
+    title = common.unquote(title)
     article = Article.objects.get(title = title)
 
-    return render(request, 'md.html', {'content': article.content})
+    return render(request, 'md.html', {"title": article.title})
+
+
+def new(request):
+    """编辑器"""
+    return render(request, 'edit.html', {"title": ""})
 
 
 def edit(request, title):
     """编辑已有的文章"""
-    if settings.DATABASES['default']['PORT'] == '4050':
-        title = urllib.unquote(str(title))
-    else:
-        title = urllib.unquote(title)
+    title = common.unquote(title)
     article = Article.objects.get(title = title)
 
     return render(request, 'edit.html', {'title': title, 'content': article.content})
@@ -63,10 +55,7 @@ def edit(request, title):
 
 def delete(request, title):
     """删除文章"""
-    if settings.DATABASES['default']['PORT'] == '4050':
-        title = urllib.unquote(str(title))
-    else:
-        title = urllib.unquote(title)
+    title = common.unquote(title)
 
     article = Article.objects.get(title = title)
     article.delete()
@@ -76,13 +65,14 @@ def delete(request, title):
 @csrf_exempt
 def publish(request):
     """发表文章"""
+    logger.info(request.POST)
     content = request.POST['content']
     title = request.POST['title']
     article = Article.objects.filter(title = title).first()
 
     #如果标题改了，没有了，就重新插入一个
     if article is None:
-        logger.info("重新插入: %s" % title)
+        logger.info("重新插入: %s" % title.encode("utf8"))
         article = Article(title =  title, content = content)
     else:
         article.content = content
@@ -157,11 +147,6 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect('/')
-
-
-def migrate(request):
-    call_command("migrate")
-    return HttpResponse("migrate done")
 
 
 """
