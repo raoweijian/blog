@@ -97,4 +97,4 @@ def save_upload_file(file):
 def unquote(title):
     # 这里判断端口 4050，是因为我把它部署在了 BAE 上，BAE 提供的数据库端口都是 4050。
     # 另外一个比较蛋疼的问题是，bae 上 title 传进来的时候是 unicode，而我本地部署时，title 是 str，所以处理方式有些不同
-    return urllib.unquote(str(title)) if settings.DATABASES['default']['PORT'] == '4050' else urllib.unquote(title)
+    return urllib.parse.unquote(str(title)) if settings.DATABASES['default']['PORT'] == '4050' else urllib.parse.unquote(title)

@@ -34,10 +34,8 @@ def index(request):
 
 def content(request, title):
     """全文页面"""
-    title = common.unquote(title)
-    article = Article.objects.get(title = title)
-
-    return render(request, 'md.html', {"title": article.title})
+    title = urllib.parse.unquote(title)
+    return render(request, 'md.html', {"title": title})
 
 
 def new(request):
@@ -47,7 +45,7 @@ def new(request):
 
 def edit(request, title):
     """编辑已有的文章"""
-    title = common.unquote(title)
+    title = urllib.parse.unquote(title)
     article = Article.objects.get(title = title)
 
     return render(request, 'edit.html', {'title': title, 'content': article.content})
@@ -55,7 +53,7 @@ def edit(request, title):
 
 def delete(request, title):
     """删除文章"""
-    title = common.unquote(title)
+    title = urllib.parse.unquote(title)
 
     article = Article.objects.get(title = title)
     article.delete()
@@ -121,7 +119,7 @@ def submit_comment(request):
 @csrf_exempt
 def upload_picture(request):
     """上传图片"""
-    data = urllib.unquote(request.POST['abc'])
+    data = urllib.parse.unquote(request.POST['abc'])
     source_code = data.split('base64,')[1]
     src = common.get_pic_src(source_code)
 
