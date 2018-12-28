@@ -132,18 +132,6 @@ $(function(){
                     return;
                 }
 
-                /*
-                let api = "/api/articles/" + this.id;
-                axios.put(api, {
-                    content: this.content,
-                    title: this.title,
-                }).then(function (response){
-                    window.location.href = response.data;
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-                */
                 let api = "";
                 let method = "";
                 if (this.id != ""){
