@@ -25,7 +25,6 @@ class PicListApi(Resource):
         return "test"
 
     def post(self):
-        print(request.data)
         pic = Pic()
         pic.base64 = request.json["base64Code"].split('base64,')[1]
         db.session.add(pic)

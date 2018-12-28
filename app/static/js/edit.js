@@ -80,7 +80,6 @@ $(function(){
                     let items = clipboardData.items;
                     let types = clipboardData.types || [];
                     if(!items){
-                        console.log(2)
                         return;
                     }
 
@@ -96,11 +95,26 @@ $(function(){
                         await this.sleep(50);
                         axios.post("/api/pics", {base64Code: reader.result})
                         .then((response) => {
-                            console.log(response);
-                            this.content = this.content + "![图片](" + response.data + ")\n";
+                            let index = this.getCursortPosition(document.getElementById("mdeditor"));
+                            this.content = this.content.slice(0, index) + "![图片](" + response.data + ")\n" + this.content.slice(index);
                         });
                     }
                 }
+            },
+
+            getCursortPosition: function(ctrl) {//获取光标位置函数
+                var CaretPos = 0;
+                // IE Support
+                if (document.selection) {
+                    ctrl.focus ();
+                    var Sel = document.selection.createRange ();
+                    Sel.moveStart ('character', -ctrl.value.length);
+                    CaretPos = Sel.text.length;
+                }
+                // Firefox support
+                else if (ctrl.selectionStart || ctrl.selectionStart == '0')
+                    CaretPos = ctrl.selectionStart;
+                return (CaretPos);
             },
 
             //同步滚动
