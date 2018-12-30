@@ -1,4 +1,5 @@
 from flask_restful import Resource, request
+from flask_login import login_required
 from flask import url_for
 
 from ..models import Article
@@ -11,6 +12,7 @@ class ArticleApi(Resource):
         article = Article.query.get(article_id)
         return article.to_full_json()
 
+    @login_required
     def put(self, article_id):
         article = Article.query.get(article_id)
         article.set_by_json(request.json)
@@ -18,6 +20,7 @@ class ArticleApi(Resource):
         db.session.commit()
         return url_for("main.article", article_id=article_id)
 
+    @login_required
     def delete(self, article_id):
         article = Article.query.get(article_id)
         db.session.delete(article)
@@ -31,6 +34,7 @@ class ArticleListApi(Resource):
             articles[i] = articles[i].to_json()
         return articles
 
+    @login_required
     def post(self):
         article = Article()
         article.set_by_json(request.json)
