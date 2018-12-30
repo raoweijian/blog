@@ -22,6 +22,10 @@ class Article(db.Model):
     create_time = db.Column(db.DateTime, default=datetime.now)
     modify_time = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
 
+    __mapper_args__ = {
+        "order_by": create_time.desc()
+    }
+
 
     def __repr__(self):
         return '<Article %r>' % self.title
