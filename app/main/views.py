@@ -1,13 +1,9 @@
-import json
-import time
-
-from flask import render_template, request, Response, abort
+from flask import render_template, abort
 from flask_login import login_required
-import requests
 
 from . import main
-from .. import db
 from ..models import Article
+
 
 @main.route('/', methods=['GET'])
 def index():

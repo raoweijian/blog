@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.routing import BaseConverter
 
@@ -16,7 +16,7 @@ login_manager.login_view = 'auth.login'
 class RegexConverter(BaseConverter):
     def __init__(self, url_map, *items):
         super(RegexConverter, self).__init__(url_map)
-        self.regex=items[0]
+        self.regex = items[0]
 
 
 def create_app(config_name):

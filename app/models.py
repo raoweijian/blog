@@ -1,4 +1,3 @@
-import json
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import url_for
@@ -25,7 +24,6 @@ class Article(db.Model):
     __mapper_args__ = {
         "order_by": create_time.desc()
     }
-
 
     def __repr__(self):
         return '<Article %r>' % self.title

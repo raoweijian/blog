@@ -44,4 +44,4 @@ class ArticleListApi(Resource):
 
 
 api.add_resource(ArticleApi, '/articles/<int:article_id>', endpoint='article')
-api.add_resource(ArticleListApi, '/articles', endpoint='articles')
+api.add_resource(ArticleListApi, '/articles/', endpoint='articles')
