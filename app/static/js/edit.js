@@ -138,7 +138,7 @@ $(function(){
                     api = "/api/articles/" + this.id;
                     method = "put";
                 }else{
-                    api = "/api/articles";
+                    api = "/api/articles/";
                     method = "post";
                 }
 
