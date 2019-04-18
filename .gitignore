@@ -1,6 +1,6 @@
 *.pyc
 *.swp
-venv
 debug.log
 debug.db
-sqlite3.db
+sqlite.db
+blog.tar.gz
