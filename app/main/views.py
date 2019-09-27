@@ -17,6 +17,11 @@ def article(article_id):
     return render_template("article.html")
 
 
+@main.route('/moon', methods=['GET'])
+def moon():
+    return render_template("moon.html")
+
+
 @main.route('/article/<int:article_id>/edit', methods=['GET'])
 @login_required
 def edit(article_id):

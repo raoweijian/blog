@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="/static/css/moon.css">
+{% endblock %}
+
+{% block content %}
+<div class="moon">
+    <div class="craters"></div>
+</div>
+<div class="stars">
+    <div class="top"></div>
+    <div class="left"></div>
+    <div class="right"></div>
+    <div class="bottom"></div>
+</div>
+{% endblock %}
