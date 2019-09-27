@@ -7,13 +7,33 @@
 {% endblock %}
 
 {% block content %}
-<div class="moon">
-    <div class="craters"></div>
+
+<div class="container-fluid" id="container">
+    <div id="starsBox">
+        <div class="moon shadow"></div>
+        <span v-for="n in starNum" :class="clazz[parseInt(Math.random() * 4)]" :style="
+            'width: ' + Math.random() * 3 + 'px;' +
+            'height: ' + Math.random() * 3 + 'px;' +
+            'top: ' + Math.random() * 100 + '%;' +
+            'left: ' + Math.random() * 100 + '%;' +
+            'background: ' + cols[parseInt(Math.random() * 4)] + ';' +
+            'box-shadow: 0 0 ' + Math.random() * 10 + 'px'
+            "></span>
+    </div>
 </div>
-<div class="stars">
-    <div class="top"></div>
-    <div class="left"></div>
-    <div class="right"></div>
-    <div class="bottom"></div>
-</div>
+
+<!--
+<script>
+var cols = ['#f5d76e', '#f7ca18', '#f4d03f', '#ececec', '#ecf0f1', '#a2ded0'];
+var stars = 250;
+
+for (var i = 0; i <= stars; i++) {
+    var size = Math.random() * 3;
+    var color = cols[parseInt(Math.random() * 4)];
+    $('#starsBox').prepend('<span class="starFlick" style=" width: ' + size + 'px; height: ' + size + 'px; top: ' + Math.random() * 100 + '%; left: ' + Math.random() * 100 + '%; background: ' + color + '; box-shadow: 0 0 ' + Math.random() * 10 + 'px' + color + ';"></span>');
+};
+</script>
+-->
+<script src="/static/js/moon.js"></script>
+
 {% endblock %}

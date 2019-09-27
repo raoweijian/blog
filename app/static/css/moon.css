@@ -1,234 +1,94 @@
-/* COLORS */
-/* MIXINS */
-
 * {
     box-sizing: border-box;
+    padding: 0;
+    margin: 0;
 }
-body,
-html {
-    height: 100%;
-    width: 100%;
-    background: -webkit-linear-gradient(315deg, #090D23, #0B0F2B);
+body {
+    background: #22313f;
 }
-.moon .craters::before,
-.moon .craters::after {
-    position: absolute;
-    display: block;
-    content: "";
-    background: #BFBFBF;
-    box-shadow: inset 2px 0 #9E9E9E;
-    border-radius: 50%;
-}
-.moon {
-    position: relative;
-    top: 25%;
-    margin: auto;
-    height: 100px;
-    width: 100px;
-    background: #EAEAEA;
-    border-radius: 50%;
-    box-shadow: inset -15px 0 6px #BFBFBF, 0 0 8px #EAEAEA;
-    animation: floating 5s linear infinite 0 forwards;
-    z-index: 10;
-}
-.moon .craters {
-    position: absolute;
-    top: 20%;
-    left: 20%;
-    height: 20%;
-    width: 20%;
-    background: #BFBFBF;
-    border-radius: 50%;
-    box-shadow: inset -1px 0 1px #9E9E9E;
-    opacity: 0.4;
-}
-.moon .craters::before {
-    top: -8px;
-    right: -25px;
-    height: 15px;
-    width: 15px;
-    box-shadow: inset -1px 0 1px #9E9E9E;
-}
-.moon .craters::after {
-    top: 30px;
-    left: 30px;
-    height: 10px;
-    width: 10px;
-    box-shadow: inset -1px 0 1px #9E9E9E;
-}
-.eye-left,
-.eye-right {
-    position: absolute;
-    bottom: 30%;
-    height: 15%;
-    width: 9%;
-    background: #333;
-    border-radius: 50%;
-    animation: blink 4s linear infinite 0;
-}
-.eye-left::before,
-.eye-right::before {
-    position: absolute;
-    display: block;
-    content: "";
-    top: 1px;
-    right: 2px;
-    height: 4px;
-    width: 2px;
-    background: #EAEAEA;
-    border-radius: 50%;
-}
-.eye-left {
-    left: 10%;
-}
-.eye-right {
-    bottom: 25%;
-    left: 30%;
-}
-.stars .top,
-.stars .top::before,
-.stars .top::after,
-.stars .left,
-.stars .left::before,
-.stars .left::after,
-.stars .bottom,
-.stars .bottom::before,
-.stars .bottom::after,
-.stars .right {
-    background: #EFE894;
-    border-radius: 50%;
-    box-shadow: 0 0 5px 1px #EFE894;
-    animation: glow 5s linear infinite;
-}
-.stars {
-    position: absolute;
-    top: 20%;
-    left: calc((100% - 300px)/2);
-    height: 200px;
-    width: 300px;
-}
-.stars .top {
-    position: absolute;
+#starsBox {
+    position: fixed;
     top: 0;
-    left: 10%;
-    height: 3px;
-    width: 3px;
-    box-shadow: 0 0 5px #EFE894;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    opacity: .5;
 }
-.stars .top::before {
+#starsBox span {
+    display: inline-block;
+    width: auto;
     position: absolute;
+    border-radius: 100%;
+    transition: 100s linear;
+}
+p {
+    position: fixed;
+    top: 50%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    transform: translateY(-50%);
+    font-size: 40px;
+    font-weight: 900;
+    color: white;
+    text-shadow: 0 0 50px black;
+    text-transform: uppercase;
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    letter-spacing: 5px;
+}
+p > span {
     display: block;
-    content: "";
-    top: 10px;
-    left: 150px;
-    height: 4px;
-    width: 4px;
+    font-size: 12px;
+    color: #bdc3c7;
+    margin-top: 30px;
+    font-weight: 100;
+    text-shadow: 0 0 50px black;
+    letter-spacing: 3px;
 }
-.stars .top::after {
-    position: absolute;
-    display: block;
-    content: "";
-    top: 2px;
-    left: 90px;
-    height: 3px;
-    width: 3px;
+p > span > a {
+    font-weight: 700;
+    text-decoration: none;
+    color: #d64541;
+    padding-bottom: 2px;
+    border-bottom: 0px solid #d64541;
+    transition: 0.5s;
 }
-.stars .left {
-    position: absolute;
-    top: 20%;
-    left: 15%;
-    height: 4px;
-    width: 4px;
-    box-shadow: 0 0 5px #EFE894;
+p > span > a:hover {
+    padding-bottom: 5px;
+    border-bottom: 2px solid #d64541;
 }
-.stars .left::before {
-    position: absolute;
-    display: block;
-    content: "";
-    top: 53px;
-    left: -12px;
-    height: 3px;
-    width: 3px;
+
+
+.starFlick {
+    animation: starFlick 1.5s ease-out infinite;
+    -webkit-animation: starFlick 1s ease-out infinite;
 }
-.stars .left::after {
-    position: absolute;
-    display: block;
-    content: "";
-    top: -10px;
-    left: 40px;
-    height: 3px;
-    width: 3px;
+
+.starFlick2 {
+	animation: starFlick 2s ease-out infinite;
+	-webkit-animation: starFlick 2s ease-out infinite;
 }
-.stars .bottom {
-    position: absolute;
-    bottom: 20%;
-    right: 28%;
-    height: 3px;
-    width: 3px;
-    box-shadow: 0 0 5px #EFE894;
+
+.starFlick3 {
+	animation: starFlick 2.5s ease-out infinite;
+	-webkit-animation: starFlick 3s ease-out infinite;
 }
-.stars .bottom::before {
-    position: absolute;
-    display: block;
-    content: "";
-    height: 4px;
-    width: 4px;
-    bottom: 35px;
-    right: -10px;
+
+.starFlick4 {
+	animation: starFlick 3.3s ease-out infinite;
+	-webkit-animation: starFlick 4s ease-out infinite;
 }
-.stars .bottom::after {
-    position: absolute;
-    display: block;
-    content: "";
-    height: 3px;
-    width: 3px;
-    top: 10px;
-    right: 80px;
-}
-.stars .right {
-    position: absolute;
-    bottom: 25%;
-    right: 10%;
-    height: 5px;
-    width: 5px;
-}
-@keyframes blink {
-    5%, 10% {
-        height: 1px;
-    }
-    10% {
-        height: 15%;
-    }
-}
-@keyframes floating {
-    0% {
-        -webkit-transform: translateY(0px);
-        -moz-transform: translateY(0px);
-        -ms-transform: translateY(0px);
-        transform: translateY(0px);
-    }
-    50% {
-        -webkit-transform: translateY(2px) translateX(1px);
-        -moz-transform: translateY(2px) translateX(1px);
-        -ms-transform: translateY(2px) translateX(1px);
-        transform: translateY(2px) translateX(1px);
-        box-shadow: inset -20px 0 20px #BFBFBF, 0 0 8px #EAEAEA;
-    }
-    100% {
-        -webkit-transform: translateY(0px);
-        -moz-transform: translateY(0px);
-        -ms-transform: translateY(0px);
-        transform: translateY(0px);
-    }
-}
-@keyframes glow {
-    0% {
+
+
+@keyframes starFlick{
+    from {
         opacity: 1;
     }
-    50% {
-        opacity: 0.6;
-    }
-    100% {
-        opacity: 1;
+    to {
+        opacity: 0.3;
     }
 }
+
+.moon { position: absolute; top:6%; left: 10% ;width: 200px; height: 200px; border-radius: 200px; background:#fff;z-index: 99 ;}
+.shadow {-moz-box-shadow:0 0 100px #fff;  -webkit-box-shadow:0 0 100px #fff;  box-shadow:0 0 100px #fff;}
