@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.routing import BaseConverter
 
 from config import config
-
 from flask_login import LoginManager
 
 db = SQLAlchemy()

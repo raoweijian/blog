@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container" id="container">
+    <el-table :data="houses">
+        <el-table-column label="标题" width="600">
+            <template slot-scope="scope">
+                <a :href="scope.row.url">[[ scope.row.title ]]</a>
+            </template>
+        </el-table-column>
+
+        <el-table-column prop="status" label="状态" width="100"></el-table-column>
+        <el-table-column prop="create_time" label="时间" width="200"></el-table-column>
+
+        <el-table-column label="下载地址" width="100">
+            <template slot-scope="scope">
+                <a v-if="scope.row.status == '下载完成'" :href="scope.row.download_url">下载</a>
+            </template>
+        </el-table-column>
+
+        <el-table-column label="确认" width="100">
+            <template slot-scope="scope">
+                <el-button v-if="scope.row.status == '下载完成'" type="success"
+                    icon="el-icon-check" circle @click="check(scope.row.id)"></el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+</div>
+
+<script src="/static/js/login.js"></script>
+{% endblock %}
