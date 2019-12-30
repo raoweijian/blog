@@ -1,0 +1,19 @@
+[uwsgi]
+socket = ./uwsgi/sock
+chmod-socket = 777
+
+# master 进程的 pid 文件
+pidfile = ./uwsgi/pid
+
+chdir = ./
+virtualenv = /root/.local/share/virtualenvs/blog-cIs1TYcM/
+
+wsgi-file = manage.py
+callable = app
+
+vacuum = true
+
+#自动重启
+python-autoreload = 1
+
+daemonize = ./log
